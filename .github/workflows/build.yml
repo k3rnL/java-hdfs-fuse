@@ -27,7 +27,7 @@ jobs:
       - name: Find JAR file
         id: jarfile
         run: |
-          echo "JAR_PATH=$(ls target/java-hdfs-fuse*.jar | head -n 1)" >> $GITHUB_ENV
+          echo "JAR_PATH=$(ls target/java-hdfs-fuse*shaded.jar | head -n 1)" >> $GITHUB_ENV
           echo Found JAR file $JAR_PATH
 
       - name: Create native image
