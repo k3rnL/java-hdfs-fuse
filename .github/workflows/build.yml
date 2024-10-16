@@ -35,7 +35,7 @@ jobs:
           native-image --no-fallback -jar ${{ env.JAR_PATH }} hdfs-mount
 
       - name: Archive native image
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v3
         with:
           name: hdfs-mount
