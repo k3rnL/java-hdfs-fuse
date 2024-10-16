@@ -1,4 +1,4 @@
-package org.example;
+package com.k3rnl.hdfs.fuse;
 
 import org.apache.hadoop.fs.Seekable;
 
