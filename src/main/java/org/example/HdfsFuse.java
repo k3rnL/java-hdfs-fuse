@@ -2,7 +2,6 @@ package org.example;
 
 import jnr.constants.platform.OpenFlags;
 import jnr.ffi.Pointer;
-import jnr.ffi.Struct;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.security.AccessControlException;
@@ -13,8 +12,6 @@ import ru.serce.jnrfuse.struct.FileStat;
 import ru.serce.jnrfuse.struct.FuseFileInfo;
 import ru.serce.jnrfuse.struct.Timespec;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
@@ -25,9 +22,12 @@ public class HdfsFuse extends FuseStubFS {
 
     final FileSystem fs;
 
-    private final Map<Long, MyBufferSalope> openFiles = new ConcurrentHashMap<>();
+    private final Map<Long, FileReadInfo> openFiles = new ConcurrentHashMap<>();
     private final Map<Long, FileWriteInfo> openWriteFiles = new ConcurrentHashMap<>();
     private final AtomicLong handleCounter = new AtomicLong();
+
+    private record FileReadInfo(SeekableBufferedInputStream in, Path path) {
+    }
 
     private static class FileWriteInfo {
         final FSDataOutputStream out;
@@ -160,8 +160,8 @@ public class HdfsFuse extends FuseStubFS {
 
             if (accessMode == OpenFlags.O_RDONLY.intValue()) {
                 // Open for reading
-                FSDataInputStream in = fs.open(filePath);
-                openFiles.put(handle, new MyBufferSalope(in, 2048 * 1024, 20)); // can keep 20MB in memory
+                SeekableBufferedInputStream in = new SeekableBufferedInputStream(fs.open(filePath), 2048 * 1024, 20);
+                openFiles.put(handle, new FileReadInfo(in, filePath)); // can keep 20MB in memory
                 fi.fh.set(handle);
             } else if (accessMode == OpenFlags.O_WRONLY.intValue() || accessMode == OpenFlags.O_RDWR.intValue()) {
                 // Open for writing or reading and writing
@@ -199,10 +199,10 @@ public class HdfsFuse extends FuseStubFS {
         long handle = fi.fh.get();
 
         // Close input stream if it's open
-        MyBufferSalope in = openFiles.remove(handle);
+        FileReadInfo in = openFiles.remove(handle);
         if (in != null) {
             try {
-                in.close();
+                in.in.close();
             } catch (IOException e) {
                 System.err.println("Error closing input stream for file: " + path);
                 e.printStackTrace();
@@ -262,7 +262,8 @@ public class HdfsFuse extends FuseStubFS {
     @Override
     public int read(String path, Pointer buf, long size, long offset, FuseFileInfo fi) {
         long handle = fi.fh.get();
-        MyBufferSalope in = openFiles.get(handle);
+        FileReadInfo info = openFiles.get(handle);
+        SeekableBufferedInputStream in = info.in;
 
         if (in == null) {
             return -ErrorCodes.EBADF(); // Invalid file handle
@@ -287,6 +288,9 @@ public class HdfsFuse extends FuseStubFS {
             }
         } catch (IOException e) {
             System.err.println("Error reading from file: " + path);
+            e.printStackTrace();
+            return -ErrorCodes.EIO();
+        } catch (Exception e) {
             e.printStackTrace();
             return -ErrorCodes.EIO();
         }
