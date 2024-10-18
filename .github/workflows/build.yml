@@ -34,6 +34,13 @@ jobs:
         run: |
           native-image --no-fallback -jar ${{ env.JAR_PATH }} hdfs-mount
 
+      - name: Archive JAR
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v3
+        with:
+          name: hdfs-mount.jar
+          path: ${{ env.JAR_PATH }}
+
       - name: Archive native image
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v3
