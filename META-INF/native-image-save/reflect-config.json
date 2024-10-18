@@ -1,0 +1,506 @@
+[
+{
+  "name":"[Ljava.lang.String;",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.k3rnl.hdfs.fuse.HdfsFuse",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.kenai.jffi.CallContext",
+  "fields":[{"name":"disposed"}]
+},
+{
+  "name":"com.kenai.jffi.ClosureMagazine",
+  "fields":[{"name":"disposed"}]
+},
+{
+  "name":"com.kenai.jffi.Invoker",
+  "methods":[{"name":"invokeI6","parameterTypes":["com.kenai.jffi.CallContext","long","int","int","int","int","int","int"] }, {"name":"invokeL6","parameterTypes":["com.kenai.jffi.CallContext","long","long","long","long","long","long","long"] }, {"name":"invokeN6","parameterTypes":["com.kenai.jffi.CallContext","long","long","long","long","long","long","long"] }]
+},
+{
+  "name":"com.kenai.jffi.Library",
+  "fields":[{"name":"disposed"}]
+},
+{
+  "name":"com.kenai.jffi.Version",
+  "fields":[{"name":"MAJOR"}, {"name":"MICRO"}, {"name":"MINOR"}]
+},
+{
+  "name":"com.kenai.jffi.internal.StubLoader",
+  "methods":[{"name":"isLoaded","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.AESCipher$General",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.ARCFOURCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DESCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DESedeCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DHParameters",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.GaloisCounterMode$AESGCM",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.TlsMasterSecretGenerator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.security.auth.UnixPrincipal"
+},
+{
+  "name":"int",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.Object",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"java.lang.String"
+},
+{
+  "name":"java.lang.Thread",
+  "fields":[{"name":"threadLocalRandomProbe"}],
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.ThreadGroup","java.lang.Runnable","java.lang.String","long","boolean"] }, {"name":"getContextClassLoader","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.ref.Cleaner",
+  "methods":[{"name":"create","parameterTypes":[] }, {"name":"register","parameterTypes":["java.lang.Object","java.lang.Runnable"] }]
+},
+{
+  "name":"java.lang.reflect.Method",
+  "methods":[{"name":"isDefault","parameterTypes":[] }]
+},
+{
+  "name":"java.security.AlgorithmParametersSpi"
+},
+{
+  "name":"java.security.KeyStoreSpi"
+},
+{
+  "name":"java.security.SecureRandomParameters"
+},
+{
+  "name":"java.util.concurrent.ForkJoinTask",
+  "fields":[{"name":"aux"}, {"name":"status"}]
+},
+{
+  "name":"java.util.concurrent.atomic.AtomicBoolean",
+  "fields":[{"name":"value"}]
+},
+{
+  "name":"java.util.concurrent.atomic.AtomicReference",
+  "fields":[{"name":"value"}]
+},
+{
+  "name":"java.util.concurrent.atomic.Striped64",
+  "fields":[{"name":"base"}, {"name":"cellsBusy"}]
+},
+{
+  "name":"javax.security.auth.x500.X500Principal",
+  "fields":[{"name":"thisX500Name"}],
+  "methods":[{"name":"<init>","parameterTypes":["sun.security.x509.X500Name"] }]
+},
+{
+  "name":"jdk.internal.misc.Unsafe"
+},
+{
+  "name":"jnr.ffi.Pointer",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"jnr.ffi.provider.converters.CharSequenceArrayParameterConverter",
+  "methods":[{"name":"nativeType","parameterTypes":[] }]
+},
+{
+  "name":"jnr.ffi.provider.converters.CharSequenceArrayParameterConverter$Out",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"fromNative","parameterTypes":[] }, {"name":"toNative","parameterTypes":[] }]
+},
+{
+  "name":"jnr.ffi.provider.converters.StringResultConverter",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"jnr.ffi.provider.converters.StructByReferenceToNativeConverter",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"fromNative","parameterTypes":[] }, {"name":"nativeType","parameterTypes":[] }, {"name":"toNative","parameterTypes":[] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.AbstractX86StubCompiler$PageHolder",
+  "fields":[{"name":"disposed"}]
+},
+{
+  "name":"jnr.ffi.provider.jffi.AsmStructByReferenceFromNativeConverter",
+  "methods":[{"name":"nativeType","parameterTypes":[] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.BufferParameterStrategy",
+  "methods":[{"name":"address","parameterTypes":["java.nio.Buffer"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$0",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long","long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$1",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$10",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long","int","long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$11",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long","long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$2",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$3",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long","long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$4",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long","long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$5",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long","long","long","long","long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$6",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long","long","long","long","long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$7",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long","long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$8",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long","long","long","long","long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeClosureProxy$$impl$$9",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.PointerParameterStrategy",
+  "methods":[{"name":"address","parameterTypes":["jnr.ffi.Pointer"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.Provider",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.platform.x86_64.linux.TypeAliases",
+  "fields":[{"name":"ALIASES"}]
+},
+{
+  "name":"jnr.ffi.util.ref.internal.Finalizer",
+  "methods":[{"name":"startFinalizer","parameterTypes":["java.lang.Class","java.lang.Object"] }]
+},
+{
+  "name":"long",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"null$Platform"
+},
+{
+  "name":"org.apache.commons.logging.LogFactory"
+},
+{
+  "name":"org.apache.commons.logging.impl.Log4JLogger",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }, {"name":"setLogFactory","parameterTypes":["org.apache.commons.logging.LogFactory"] }]
+},
+{
+  "name":"org.apache.commons.logging.impl.LogFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.commons.logging.impl.WeakHashtable",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.hadoop.hdfs.web.WebHdfsFileSystem",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.hadoop.mapred.JobConf"
+},
+{
+  "name":"org.apache.hadoop.security.JniBasedUnixGroupsMappingWithFallback",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.hadoop.security.UserGroupInformation$HadoopLoginModule",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.hadoop.security.UserGroupInformation$UgiMetrics",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.apache.hadoop.security.ssl.FileBasedKeyStoresFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.log4j.Level",
+  "fields":[{"name":"TRACE"}]
+},
+{
+  "name":"org.apache.log4j.Log4jLoggerFactory"
+},
+{
+  "name":"org.apache.log4j.Priority"
+},
+{
+  "name":"org.objectweb.asm.util.TraceMethodVisitor",
+  "methods":[{"name":"<init>","parameterTypes":["org.objectweb.asm.MethodVisitor"] }]
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$CreateCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$GetAttrCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$InitCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$OpenCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$ReadCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$ReaddirCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$ReleaseCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$RmdirCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$TruncateCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$UnlinkCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$UtimensCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.FuseCallbacks$WriteCallback",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.LibFuse",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.LibFuse$jnr$ffi$0",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.Runtime","jnr.ffi.provider.jffi.NativeLibrary","java.lang.Object[]"] }]
+},
+{
+  "name":"ru.serce.jnrfuse.struct.FuseBufvec",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.struct.FuseContext",
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.Runtime"] }]
+},
+{
+  "name":"ru.serce.jnrfuse.struct.FuseContext$$jnr$$StructByReferenceFromNativeConverter$$0",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.Runtime","int"] }, {"name":"fromNative","parameterTypes":[] }, {"name":"toNative","parameterTypes":[] }]
+},
+{
+  "name":"ru.serce.jnrfuse.struct.FuseOperations",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"ru.serce.jnrfuse.struct.FusePollhandle",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"sun.misc.Cleaner"
+},
+{
+  "name":"sun.misc.Unsafe",
+  "fields":[{"name":"theUnsafe"}],
+  "methods":[{"name":"allocateMemory","parameterTypes":["long"] }, {"name":"freeMemory","parameterTypes":["long"] }, {"name":"getAddress","parameterTypes":["long"] }, {"name":"getByte","parameterTypes":["long"] }, {"name":"getDouble","parameterTypes":["long"] }, {"name":"getFloat","parameterTypes":["long"] }, {"name":"getInt","parameterTypes":["long"] }, {"name":"getLong","parameterTypes":["long"] }, {"name":"getShort","parameterTypes":["long"] }, {"name":"putAddress","parameterTypes":["long","long"] }, {"name":"putByte","parameterTypes":["long","byte"] }, {"name":"putDouble","parameterTypes":["long","double"] }, {"name":"putFloat","parameterTypes":["long","float"] }, {"name":"putInt","parameterTypes":["long","int"] }, {"name":"putLong","parameterTypes":["long","long"] }, {"name":"putShort","parameterTypes":["long","short"] }]
+},
+{
+  "name":"sun.security.pkcs12.PKCS12KeyStore",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.pkcs12.PKCS12KeyStore$DualFormatPKCS12",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DSA$SHA224withDSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DSA$SHA256withDSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.JavaKeyStore$DualFormatJKS",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.JavaKeyStore$JKS",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.NativePRNG",
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
+},
+{
+  "name":"sun.security.provider.SHA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA2$SHA224",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA2$SHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA5$SHA384",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA5$SHA512",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.X509Factory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.PSSParameters",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSAKeyFactory$Legacy",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSAPSSSignature",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSASignature$SHA224withRSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.KeyManagerFactoryImpl$SunX509",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.SSLContextImpl$TLSContext",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.TrustManagerFactoryImpl$PKIXFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.x509.AuthorityInfoAccessExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.AuthorityKeyIdentifierExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.BasicConstraintsExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.CRLDistributionPointsExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.CertificatePoliciesExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.ExtendedKeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.IssuerAlternativeNameExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.KeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.NetscapeCertTypeExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.PrivateKeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.SubjectAlternativeNameExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.SubjectKeyIdentifierExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"void",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+}
+]

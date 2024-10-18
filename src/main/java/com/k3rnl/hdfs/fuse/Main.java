@@ -22,6 +22,8 @@ public class Main {
         CommandLineParser cmd = new PosixParser();
         CommandLine cl = cmd.parse(options, args);
 
+        System.setProperty("jnr.ffi.asm.enabled", "false");
+
         System.setProperty("hadoop.home.dir", "/");
         System.setProperty("HADOOP_USER_NAME", cl.getOptionValue("o"));
 

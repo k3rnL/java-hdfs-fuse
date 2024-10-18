@@ -692,6 +692,21 @@
   "queryAllPublicConstructors":true
 },
 {
+  "name":"jnr.ffi.provider.LoadedLibrary",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredClasses":true,
+  "allRecordComponents":true,
+  "allPermittedSubclasses":true,
+  "allNestMembers":true,
+  "allSigners":true,
+  "allPublicClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "queryAllPublicConstructors":true
+},
+{
   "name":"jnr.ffi.provider.converters.CharSequenceArrayParameterConverter",
   "allDeclaredFields":true,
   "allPublicFields":true,
@@ -739,6 +754,10 @@
   "queryAllPublicConstructors":true
 },
 {
+  "name":"jnr.ffi.provider.converters.StructByReferenceFromNativeConverter",
+  "methods":[{"name":"fromNative","parameterTypes":[] }, {"name":"nativeType","parameterTypes":[] }, {"name":"toNative","parameterTypes":[] }]
+},
+{
   "name":"jnr.ffi.provider.converters.StructByReferenceToNativeConverter",
   "allDeclaredFields":true,
   "allPublicFields":true,
@@ -767,7 +786,8 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "queryAllPublicConstructors":true
+  "queryAllPublicConstructors":true,
+  "fields":[{"name":"disposed"}]
 },
 {
   "name":"jnr.ffi.provider.jffi.AsmStructByReferenceFromNativeConverter",
@@ -984,6 +1004,21 @@
   "queryAllDeclaredConstructors":true,
   "queryAllPublicConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.provider.jffi.NativeRuntime","java.lang.Object[]"] }, {"name":"invoke","parameterTypes":["long"] }]
+},
+{
+  "name":"jnr.ffi.provider.jffi.NativeLibrary",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredClasses":true,
+  "allRecordComponents":true,
+  "allPermittedSubclasses":true,
+  "allNestMembers":true,
+  "allSigners":true,
+  "allPublicClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "queryAllPublicConstructors":true
 },
 {
   "name":"jnr.ffi.provider.jffi.PointerParameterStrategy",
@@ -1578,6 +1613,21 @@
   "queryAllDeclaredConstructors":true,
   "queryAllPublicConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":["jnr.ffi.Runtime","jnr.ffi.provider.jffi.NativeLibrary","java.lang.Object[]"] }]
+},
+{
+  "name":"ru.serce.jnrfuse.struct.FileStat",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredClasses":true,
+  "allRecordComponents":true,
+  "allPermittedSubclasses":true,
+  "allNestMembers":true,
+  "allSigners":true,
+  "allPublicClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "queryAllPublicConstructors":true
 },
 {
   "name":"ru.serce.jnrfuse.struct.FuseBufvec",
