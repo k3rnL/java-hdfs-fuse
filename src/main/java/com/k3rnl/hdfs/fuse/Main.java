@@ -1,54 +1,86 @@
 package com.k3rnl.hdfs.fuse;
 
-import org.apache.commons.cli.*;
+import com.k3rnl.fuse.FuseNative;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Parameters;
+import picocli.CommandLine.Option;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public class Main {
-    public static void main(String[] args) throws IOException, ParseException {
-        Options options = new Options();
-        options.addOption("h", "help", false, "print this message");
-        options.addOption("o", "options", true, "FUSE options");
-        options.addOption("s", "server", true, "HDFS server URI, hdfs://<host>:<port> or webhdfs://<host>:<port>");
-        options.addOption("u", "user", true, "HDFS user name");
+@Command(name = "hdfs-mount", description = "Mount HDFS file system")
+public class Main implements Callable<Integer> {
 
-        CommandLineParser cmd = new PosixParser();
-        CommandLine cl = cmd.parse(options, args);
+    @Parameters(index = "0", description = "HDFS server URI, hdfs://<host>:<port> or webhdfs://<host>:<port>")
+    private String server;
 
-        System.setProperty("jnr.ffi.asm.enabled", "false");
+    @Parameters(index = "1", description = "mounting point, local directory to mount the HDFS file system, if it does not exist, it will be created")
+    private String mountPoint;
 
-        System.setProperty("hadoop.home.dir", "/");
-        System.setProperty("HADOOP_USER_NAME", cl.getOptionValue("o"));
+    @Option(names = {"-h", "--help"}, usageHelp = true, description = "display a help message")
+    private boolean helpRequested;
 
-        System.setProperty("socksProxyHost", "localhost");
-        System.setProperty("socksProxyPort", "8080");
+    @Option(names = {"-u", "--user"},  description = "HDFS user name, default is the current user")
+    private String user;
+
+    @Option(names = {"-t", "--target"}, description = "target directory in HDFS, default is /", defaultValue = "/")
+    private String target;
+
+    @Option(names = {"--proxy-host"}, description = "SOCKS proxy host if needed for WebHDFS")
+    private String proxyHost;
+
+    @Option(names = {"--proxy-port"}, description = "SOCKS proxy port if needed for WebHDFS")
+    private int proxyPort;
+
+    @Option(names = {"-d", "--debug"}, description = "enable fuse debug mode")
+    private boolean debug;
+
+    @Parameters(index = "2..*", description = "FUSE options. eg. -o allow_other,ro")
+    private final List<String> fuseOptions = new ArrayList<>();
+
+    @Override
+    public Integer call() throws Exception {
+
+        System.setProperty("hadoop.home.dir", target);
+
+        if (user != null) {
+            System.setProperty("HADOOP_USER_NAME", user);
+        }
+
+        if (proxyHost != null) {
+            System.setProperty("socksProxyHost", proxyHost);
+            if (proxyPort > 0) {
+                System.setProperty("socksProxyPort", Integer.toString(proxyPort));
+            }
+        }
 
         Configuration conf = new HdfsConfiguration();
-        conf.set("fs.defaultFS", cl.getOptionValue("s"));
-        FileSystem fs = FileSystem.get(conf);
-
-        java.nio.file.FileSystem fileSystem = java.nio.file.FileSystems.getDefault();
-
-        HdfsFuse hdfsFuse = new HdfsFuse(fs);
-
-        List<String> opts = new ArrayList<>();
-        for (var opt : cl.getOptionValues("o")) {
-            opts.add("-o");
-            opts.add(opt);
-        }
-        String[] fuseOpts = opts.toArray(new String[0]);
+        conf.set("fs.defaultFS", server);
 
         try {
-            hdfsFuse.mount(fileSystem.getPath("/tmp/hdfs"), true, true, fuseOpts);
-        } finally {
-            hdfsFuse.umount();
+            var fs = FileSystem.get(conf);
+
+            HdfsFuseOperations fuseOps = new HdfsFuseOperations(fs);
+            FuseNative fuse = new FuseNative(fuseOps);
+            fuse.mount(mountPoint, debug, fuseOptions);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        return 0;
     }
+
+    public static void main(String[] args) {
+        int exitCode = new CommandLine(new Main())
+                .setStopAtPositional(true)
+                .execute(args);
+        System.exit(exitCode);
+    }
+
 }

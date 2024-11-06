@@ -28,7 +28,11 @@ public class HdfsFuseOperations extends JavaFuseOperations {
     private final Map<Long, FileWriteInfo> openWriteFiles = new ConcurrentHashMap<>();
     private final AtomicLong handleCounter = new AtomicLong();
 
-    public FileSystem fs;
+    protected FileSystem fs;
+
+    public HdfsFuseOperations(FileSystem fs) {
+        this.fs = fs;
+    }
 
     public record FileReadInfo(SeekableBufferedInputStream in, Path path) {}
 
@@ -53,8 +57,9 @@ public class HdfsFuseOperations extends JavaFuseOperations {
             stat.st_mode(FileStatFlags.S_IFDIR | permission);
         stat.st_size(status.getLen());
         stat.st_nlink(1);
-//        stat.st_blksize(4096); // Preferred block size
-//        stat.st_blocks((status.getLen() + 511) / 512);
+        stat.st_atime().tv_sec(status.getAccessTime() / 1000);
+        stat.st_mtime().tv_sec(status.getModificationTime() / 1000);
+        stat.st_ctime().tv_sec(status.getModificationTime() / 1000);
     }
 
     @Override
@@ -62,10 +67,6 @@ public class HdfsFuseOperations extends JavaFuseOperations {
         try {
             var status = fs.getFileStatus(new Path(path));
             fileStat(status, stat);
-//            stat.st_atime().tv_nsec(status.getAccessTime() * 1000);
-//            stat.st_atim.tv_sec(status.getAccessTime() / 1000);
-//            stat.st_mtim.tv_sec(status.getModificationTime() / 1000);
-//            stat.st_mtim.tv_nsec(status.getModificationTime() * 1000);
             return 0;
         } catch (FileNotFoundException e) {
             return -Errno.ENOENT();
@@ -74,18 +75,12 @@ public class HdfsFuseOperations extends JavaFuseOperations {
         } catch (IOException e) {
             System.err.println("Error getting file status for path: " + path);
             e.printStackTrace();
+            return -Errno.EIO();
         }
-        return -Errno.ENOENT();
     }
 
     @Override
     public int readdir(String path, VoidPointer buf, FillDir filter, long offset, FuseFileInfo fi, FuseReaddirFlags flags) {
-        if (fi.rawValue() != 0) {
-            System.out.println("fi: " + fi.rawValue() + " fh: " + fi.fh());
-        } else {
-            System.out.println("File info is null");
-        }
-
         try {
             var folderStatus = fs.getFileStatus(new Path(path));
             if (!folderStatus.isDirectory()) {
@@ -174,7 +169,6 @@ public class HdfsFuseOperations extends JavaFuseOperations {
                 SeekableBufferedInputStream in = new SeekableBufferedInputStream(fs.open(filePath), 2048 * 1024, 20);
                 openFiles.put(handle, new FileReadInfo(in, filePath));
                 fi.fh(handle);
-                System.out.println("Opened file for reading: " + path + " with handle: " + handle);
             } else if (accessMode == OpenFlags.O_WRONLY || accessMode == OpenFlags.O_RDWR) {
                 // Open for writing or reading and writing
                 FileWriteInfo writeInfo;
@@ -191,7 +185,6 @@ public class HdfsFuseOperations extends JavaFuseOperations {
                 }
                 openWriteFiles.put(handle, writeInfo);
                 fi.fh(handle);
-                System.out.println("Opened file for writing: " + path + " with handle: " + handle);
             } else {
                 // Unsupported access mode
                 return -Errno.EACCES();
@@ -327,7 +320,6 @@ public class HdfsFuseOperations extends JavaFuseOperations {
             }
 
             if (offset > writeInfo.lastOffset) {
-                System.out.println("Writing to offset: " + offset + " with last offset: " + writeInfo.lastOffset);
                 // Need to fill the gap between lastOffset and offset with zeros
                 long gapSize = offset - writeInfo.lastOffset;
                 byte[] zeros = new byte[(int) gapSize];
@@ -360,11 +352,68 @@ public class HdfsFuseOperations extends JavaFuseOperations {
             return -Errno.ENOENT();
         } catch (IOException e) {
             System.err.println("Error setting file times: " + path);
+            e.printStackTrace();
+            return -Errno.EIO();
+        }
+    }
+    @Override
+    public int statfs(String path, StatVFS stat) {
+        try {
+            final var blockSize = fs.getDefaultBlockSize(new Path("/"));
+            var status = fs.getStatus();
+            stat.f_blocks(status.getCapacity() / blockSize);
+            stat.f_bfree(status.getRemaining() / blockSize);
+            stat.f_bavail(status.getRemaining() / blockSize);
+            stat.f_bsize(blockSize);
+            stat.f_frsize(blockSize);
+            return 0;
+        } catch (FileNotFoundException e) {
+            return -Errno.ENOENT();
+        } catch (IOException e) {
+            System.err.println("Error getting file status for path: " + path);
             return -Errno.EIO();
         }
     }
 
-//    @Override
+    @Override
+    public int mkdir(String path, int mode) {
+        try {
+            FsPermission permission = new FsPermission((short) (mode & 0777));
+            fs.mkdirs(new Path(path), permission);
+            return 0;
+        } catch (IOException e) {
+            System.err.println("Error creating directory: " + path);
+            return -Errno.EIO();
+        }
+    }
+
+    @Override
+    public int mknod(String path, int mode, int rdev) {
+        try {
+            FsPermission permission = new FsPermission((short) (mode & 0777));
+            fs.create(new Path(path), permission, true, 4096, fs.getDefaultReplication(new Path(path)), fs.getDefaultBlockSize(new Path(path)), null)
+                    .close(); // force the file to exists
+            return 0;
+        } catch (IOException e) {
+            System.err.println("Error creating file: " + path);
+            return -Errno.EIO();
+        }
+    }
+
+    @Override
+    public int rename(String from, String to, int flags) {
+        try {
+            fs.rename(new Path(from), new Path(to));
+            return 0;
+        } catch (IOException e) {
+            System.err.println("Error renaming file: " + from + " to: " + to);
+            return -Errno.EIO();
+        }
+    }
+
+
+
+    //    @Override
 //    public int truncate(String path, long size, FuseFileInfo fi) {
 //        try {
 //            var status = fs.getFileStatus(new Path(path));
@@ -382,27 +431,5 @@ public class HdfsFuseOperations extends JavaFuseOperations {
 //        }
 //    }
 
-    @Override
-    public VoidPointer init(VoidPointer conn, FuseConfig config) {
-        System.out.println("Initializing filesystem");
 
-        System.setProperty("hadoop.home.dir", "/");
-        System.setProperty("HADOOP_USER_NAME", "edaniel");
-
-        System.setProperty("socksProxyHost", "localhost");
-        System.setProperty("socksProxyPort", "8080");
-
-        Configuration conf = new HdfsConfiguration();
-        conf.set("fs.defaultFS", "webhdfs://big-namenode1.vlandata.cls.fr:50070/");
-
-        try {
-            fs = FileSystem.get(conf);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        System.out.println("fs: " + fs);
-
-        return FuseLibrary.fuse_get_context().private_data();
-    }
 }

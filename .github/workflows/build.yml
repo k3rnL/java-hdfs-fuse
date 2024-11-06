@@ -4,82 +4,72 @@ on:
   push:
     branches:
       - main
-  release:
-    types:
-      - created
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'  # Match tags like 1.0.0, 2.1.3, etc.
 
 jobs:
   build-native:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '17'      # See 'Options' section below for all supported versions
+          java-version: '21'      # See 'Options' section below for all supported versions
           distribution: 'graalvm' # See 'Options' section below for all available distributions
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install FUSE3
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fuse3 libfuse3-dev
+
       - name: Build the project
         run: |
-          mvn package -Pnative
-
-      - name: Find JAR file
-        id: jarfile
-        run: |
-          echo "JAR_PATH=$(ls target/java-hdfs-fuse*.jar | head -n 1)" >> $GITHUB_ENV
-          echo Found JAR file $JAR_PATH
-
-      - name: Create native image
-        run: |
-          native-image --no-fallback -jar ${{ env.JAR_PATH }} hdfs-mount
-
-      - name: Archive JAR
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v3
-        with:
-          name: hdfs-mount.jar
-          path: ${{ env.JAR_PATH }}
+          mvn package
 
       - name: Archive native image
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: hdfs-mount
-          path: hdfs-mount
+          name: native-image
+          path: |
+            target/hdfs-mount
 
   release:
     runs-on: ubuntu-latest
     needs: build-native
+    permissions:
+      contents: write
     if: startsWith(github.ref, 'refs/tags/')
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Download native image
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: native-image
+          path: ./artifacts/native-image
+
+      - name: Get commit message
+        id: get_commit_message
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B "$TAG_NAME")
+          echo "commit_message<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMIT_MESSAGE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create GitHub release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: ${{ github.ref_name }}
-          body: "Release for tag ${{ github.ref_name }}"
-          draft: false
-          prerelease: false
+          artifacts: ./artifacts/native-image/*
+          body: |
+            Release for tag `${{ github.ref_name }}`
 
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: hdfs-mount
-          asset_name: hdfs-mount
-          asset_content_type: application/octet-stream
+            **Changes:**
+            ${{ steps.get_commit_message.outputs.commit_message }}

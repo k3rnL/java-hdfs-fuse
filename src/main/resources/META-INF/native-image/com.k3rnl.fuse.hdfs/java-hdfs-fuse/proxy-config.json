@@ -4,8 +4,5 @@
   },
   {
     "interfaces":["org.apache.hadoop.metrics2.MetricsSystem$Callback","ru.serce.jnrfuse.LibFuse","jnr.ffi.provider.LoadedLibrary"]
-  },
-  {
-    "interfaces":["ru.serce.jnrfuse.LibFuse","jnr.ffi.provider.LoadedLibrary"]
   }
 ]
