@@ -62,20 +62,24 @@ public class SeekableBufferedInputStream extends InputStream implements Seekable
             return null; // EOF
         }
         parts.add(new StreamPart(buffer, read));
-        return parts.get(parts.size() - 1);
+        return parts.getLast();
     }
 
     private StreamPart loadPart(int index) throws IOException {
         Seekable in = (Seekable) this.in;
         long pos = in.getPos();
-        in.seek(index * bufferSize);
+        in.seek((long) index * bufferSize);
         byte[] buffer = new byte[bufferSize];
         int read = this.in.readNBytes(buffer, 0, bufferSize);
         in.seek(pos);
         if (read == -1) {
             return null; // EOF
         }
-        parts.set(index, new StreamPart(buffer, read));
+        var part = new StreamPart(buffer, read);
+        if (index == parts.size())
+            parts.add(part);
+        else
+            parts.set(index, part);
         return parts.get(index);
     }
 
