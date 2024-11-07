@@ -5,12 +5,10 @@ import com.k3rnl.fuse.api.JavaFuseOperations;
 import com.k3rnl.fuse.fuse.*;
 import com.k3rnl.fuse.libc.*;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
+import org.apache.hadoop.ipc.RemoteException;
 import org.apache.hadoop.security.AccessControlException;
 import org.graalvm.nativeimage.StackValue;
 import org.graalvm.nativeimage.c.type.VoidPointer;
@@ -18,6 +16,7 @@ import org.graalvm.word.WordFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -160,29 +159,40 @@ public class HdfsFuseOperations extends JavaFuseOperations {
                 }
             }
 
-            // Handle access modes
+//            // Handle truncation
+//            boolean truncate = (flags & OpenFlags.O_TRUNC) != 0;
+
+            // Assign a unique handle
             long handle = handleCounter.incrementAndGet();
 
             if (accessMode == OpenFlags.O_RDONLY) {
                 // Open for reading
-                // can keep 20MB in memory
                 SeekableBufferedInputStream in = new SeekableBufferedInputStream(fs.open(filePath), 2048 * 1024, 20);
                 openFiles.put(handle, new FileReadInfo(in, filePath));
                 fi.fh(handle);
             } else if (accessMode == OpenFlags.O_WRONLY || accessMode == OpenFlags.O_RDWR) {
                 // Open for writing or reading and writing
                 FileWriteInfo writeInfo;
+                FSDataOutputStream out;
+
                 if ((flags & OpenFlags.O_APPEND) != 0) {
                     // Open for appending
-                    FSDataOutputStream out = fs.append(filePath);
+                    out = fs.append(filePath);
                     writeInfo = new FileWriteInfo(out, filePath);
                     writeInfo.lastOffset = (int) status.getLen();
                 } else {
-                    // Overwrite the file
-                    FSDataOutputStream out = fs.create(filePath, true);
+                    // Open for writing
+                    out = fs.create(filePath, true);
                     writeInfo = new FileWriteInfo(out, filePath);
-                    writeInfo.lastOffset = 0;
+//                    writeInfo.lastOffset = truncate ? 0 : (int) status.getLen();
                 }
+
+                // If access mode is O_RDWR, also handle reading
+                if (accessMode == OpenFlags.O_RDWR) {
+                    SeekableBufferedInputStream in = new SeekableBufferedInputStream(fs.open(filePath), 2048 * 1024, 20);
+                    openFiles.put(handle, new FileReadInfo(in, filePath));
+                }
+
                 openWriteFiles.put(handle, writeInfo);
                 fi.fh(handle);
             } else {
@@ -199,6 +209,7 @@ public class HdfsFuseOperations extends JavaFuseOperations {
             return -Errno.EIO();
         }
     }
+
 
     @Override
     public int release(String path, FuseFileInfo fi) {
@@ -411,25 +422,123 @@ public class HdfsFuseOperations extends JavaFuseOperations {
         }
     }
 
+    @Override
+    public int chown(String path, long uid, long gid, FuseFileInfo fi) {
+        return 0;
+    }
 
+    @Override
+    public int chmod(String path, long mode, FuseFileInfo fi) {
+        try {
+            FsPermission permission = new FsPermission((short) (mode & 0777));
+            fs.setPermission(new Path(path), permission);
+            return 0;
+        } catch (IOException e) {
+            System.err.println("Error setting file permissions: " + path);
+            return -Errno.EIO();
+        }
+    }
 
-    //    @Override
-//    public int truncate(String path, long size, FuseFileInfo fi) {
-//        try {
-//            var status = fs.getFileStatus(new Path(path));
-//            if (status.isDirectory()) {
-//                return -Errno.EISDIR();
-//            }
-//            fs.truncate(new Path(path), size);
-//            return 0;
-//        } catch (FileNotFoundException e) {
-//            return -Errno.ENOENT();
-//        } catch (IOException e) {
-//            System.err.println("Error truncating file: " + path);
-//            e.printStackTrace();
-//            return -Errno.EIO();
-//        }
-//    }
+    @Override
+    public int truncate(String path, long size, FuseFileInfo fi) {
+        try {
+            var status = fs.getFileStatus(new Path(path));
+            if (status.isDirectory()) {
+                return -Errno.EISDIR();
+            }
+            try {
+                fs.truncate(new Path(path), size);
+            } catch (RemoteException e) {
+                // HDFS does not support truncating files remotely
+            }
+            return 0;
+        } catch (FileNotFoundException e) {
+            return -Errno.ENOENT();
+        } catch (IOException e) {
+            System.err.println("Error truncating file: " + path);
+            e.printStackTrace();
+            return -Errno.EIO();
+        }
+    }
 
+    @Override
+    public int getxattr(String path, String name, byte[] value, long size) {
+        try {
+            byte[] xAttr = fs.getXAttr(new Path(path), name);
+            if (xAttr.length > size) {
+                return -Errno.ERANGE();
+            }
+            System.arraycopy(xAttr, 0, value, 0, Math.min(xAttr.length, (int) size));
+            if (size > xAttr.length)
+                value[xAttr.length] = 0;
+            return 0;
+        } catch (AccessControlException e) {
+            return -Errno.EACCES();
+        } catch (FileNotFoundException e) {
+            return -Errno.ENOENT();
+        } catch (IOException e) {
+            System.err.println("Error getting xattr: " + name + " for file: " + path);
+            e.printStackTrace();
+            return -Errno.EIO();
+        }
+    }
+
+    @Override
+    public int setxattr(String path, String name, byte[] value, long size, int flags) {
+        try {
+            XAttrSetFlag flag;
+            if ((flags & 1) == 1)
+                flag = XAttrSetFlag.CREATE;
+            else
+                flag = XAttrSetFlag.REPLACE;
+            fs.setXAttr(new Path(path), name, value, EnumSet.of(flag));
+            return 0;
+        } catch (AccessControlException e) {
+            return -Errno.EACCES();
+        } catch (FileNotFoundException e) {
+            return -Errno.ENOENT();
+        } catch (IOException e) {
+            System.err.println("Error setting xattr: " + name + " for file: " + path);
+            e.printStackTrace();
+            return -Errno.EIO();
+        }
+    }
+
+    @Override
+    public int removexattr(String path, String name) {
+        try {
+            fs.removeXAttr(new Path(path), name);
+            return 0;
+        } catch (AccessControlException e) {
+            return -Errno.EACCES();
+        } catch (FileNotFoundException e) {
+            return -Errno.ENOENT();
+        } catch (IOException e) {
+            System.err.println("Error removing xattr: " + name + " for file: " + path);
+            e.printStackTrace();
+            return -Errno.EIO();
+        }
+    }
+
+    @Override
+    public int flush(String path, FuseFileInfo fi) {
+        long handle = fi.fh();
+        FileWriteInfo writeInfo = openWriteFiles.get(handle);
+
+        if (writeInfo != null) {
+            try {
+                // Use hflush to flush data to DataNodes
+                writeInfo.out.hflush();
+                // Alternatively, use hsync to sync data to disk
+                // writeInfo.out.hsync();
+                return 0;
+            } catch (IOException e) {
+                System.err.println("Error flushing output stream for file: " + path);
+                e.printStackTrace();
+                return -Errno.EIO();
+            }
+        }
+        return 0;
+    }
 
 }
