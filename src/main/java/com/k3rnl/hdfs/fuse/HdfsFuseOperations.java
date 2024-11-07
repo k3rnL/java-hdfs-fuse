@@ -4,10 +4,8 @@ import com.k3rnl.fuse.api.FillDir;
 import com.k3rnl.fuse.api.JavaFuseOperations;
 import com.k3rnl.fuse.fuse.*;
 import com.k3rnl.fuse.libc.*;
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.fs.permission.FsPermission;
-import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.ipc.RemoteException;
 import org.apache.hadoop.security.AccessControlException;
 import org.graalvm.nativeimage.StackValue;
@@ -159,9 +157,6 @@ public class HdfsFuseOperations extends JavaFuseOperations {
                 }
             }
 
-//            // Handle truncation
-//            boolean truncate = (flags & OpenFlags.O_TRUNC) != 0;
-
             // Assign a unique handle
             long handle = handleCounter.incrementAndGet();
 
@@ -209,7 +204,6 @@ public class HdfsFuseOperations extends JavaFuseOperations {
             return -Errno.EIO();
         }
     }
-
 
     @Override
     public int release(String path, FuseFileInfo fi) {
@@ -319,8 +313,6 @@ public class HdfsFuseOperations extends JavaFuseOperations {
         FileWriteInfo writeInfo = openWriteFiles.get(handle);
 
         if (writeInfo == null) {
-            System.out.println("Invalid file handle: " + handle);
-            System.out.println("Open files: " + openWriteFiles);
             return -Errno.EBADF(); // Invalid file handle
         }
 

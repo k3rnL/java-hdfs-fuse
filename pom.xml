@@ -6,7 +6,7 @@
 
     <groupId>com.k3rnl.fuse.hdfs</groupId>
     <artifactId>java-hdfs-fuse</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.k3rnl.fuse</groupId>
             <artifactId>fuse-native</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
@@ -84,7 +84,7 @@
                     <mainClass>com.k3rnl.hdfs.fuse.Main</mainClass>
                     <imageName>hdfs-mount</imageName>
                     <buildArgs>
-                        <arg>-O3</arg>
+                        <arg>-O0</arg>
                         <arg>--no-fallback</arg>
                         <arg>--enable-http</arg>
                         <arg>--enable-https</arg>

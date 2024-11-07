@@ -60,6 +60,14 @@ public class Main implements Callable<Integer> {
             }
         }
 
+        var mountPointFile = new java.io.File(mountPoint);
+        if (!mountPointFile.exists()) {
+            if (!mountPointFile.mkdirs()) {
+                System.err.println("Failed to create mounting point: " + mountPoint);
+                return 1;
+            }
+        }
+
         Configuration conf = new HdfsConfiguration();
         conf.set("fs.defaultFS", server);
 
